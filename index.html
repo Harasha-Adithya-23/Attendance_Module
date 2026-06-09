@@ -1,68 +1,81 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>A600 Attendance System</title>
+<head>
+    <title>A600 Attendance System</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
 
-		<style>
+        button {
+            width: 160px;
+            height: 70px;
+            font-size: 16px;
+            margin: 4px;
+        }
 
-			body
-			{
-				text-align: center;
-			}
+        table {
+            margin: auto;
+        }
 
-			button
-			{
-				width: 200px;
-				height: 80px;
-				font-size: 20px;
-			}
+        label {
+            font-size: 16px;
+        }
 
-			table
-			{
-				margin: auto;
-			}
+        #userid {
+            width: 60px;
+            font-size: 16px;
+            text-align: center;
+        }
 
-			textarea
-			{
-				width: 500px;
-				height: 300px;
-			}
-			
-		</style>
+        #status {
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre;
+            min-height: 16px;
+        }
 
-		
-	</head>
+        textarea {
+            width: 500px;
+            height: 300px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
 
-	<body>
-		<h1>A600 Attendance System</h1>
+    <h1>A600 Attendance System</h1>
 
-		<!-- Buttons for Choosing -->
-		
-		<table>
-			<tr>
-				<td><button id="plcbtn" >Place Finger</button></td>
-				<td><button id="enrollbtn" >Enroll Finger</button></td>
-				<td><button id="removebtn" >Remove Finger</button></td>
-			</tr>
+    <p>
+        <label for="userid">User ID (0 to 63):</label>
+        <input type="number" id="userid" min="0" max="63" value="0">
+    </p>
 
-			<tr>
-				<td><button id="endday" >End Day</button></td>
-				<td><button id="reset" >Reset CSV</button></td>
-				<td><button id="clear" >Clear log</button></td>
-			</tr>
-	
-		
-				
-		</table>
+    <br>
 
-		<h3>Activity Log</h3>
+    <table>
+        <tr>
+            <td><button id="plcbtn">Place Finger</button></td>
+            <td><button id="enrollbtn">Enroll Finger</button></td>
+            <td><button id="removebtn">Remove Finger</button></td>
+        </tr>
+        <tr>
+            <td><button id="endday">End Day</button></td>
+            <td><button id="reset">Reset CSV</button></td>
+            <td><button id="clear">Clear Log</button></td>
+        </tr>
+    </table>
 
-		<textarea rows ='15' cols ='60' ></textarea>
+    <br>
 
-	<script src="app.js"></script>
+    <h3>Enrolled Users</h3>
+    <pre id="status">Loading...</pre>
 
-		
-	</body>
+    <h3>Activity Log</h3>
+    <textarea id="logarea" readonly></textarea>
 
-
+    <script src="app.js"></script>
+</body>
 </html>
