@@ -158,7 +158,7 @@ void identify()
         fclose(fp);
 
         Record[id].isIN = 0;
-        return;
+        return; 
     }
 
     /* ── LOGIN ── */
@@ -254,6 +254,7 @@ void AttendanceMenu()
 
 /* ── main ─────────────────────────────────────────────────────────────────── */
 
+/*
 int main()
 {
     if (startAndConfigUart(DEVICE) == -1)
@@ -267,3 +268,4 @@ int main()
     close(port);
     return 0;
 }
+*/
