@@ -18,7 +18,7 @@
  *  GET  /app.js            — serve app.js
  *
  * Build (on the board):
- *   gcc -O2 -Wall -o attendance_server server.c -lm
+ *   $CC -O2 -Wall -o attendance_server server.c -lm
  *
  * Run:
  *   ./attendance_server
@@ -155,75 +155,11 @@ static void do_enroll(int id, char *out_buf, int out_size)
         return;
     }
     
-       int user_id = id;
-    
-        unsigned char buf[16];
-        char cmd[64];
-    
-        probeJPEG();
-        
-    
-        snprintf(out_buf, out_size,"Enrolling user ID %d\n", user_id);
-        snprintf(out_buf,out_size,"You will need to press your finger 3 times\n");
-        snprintf(out_buf,out_size,"----------------------------------------------\n");
-    
-        for (int press = 1; press <= 3; press++) {
-        	snprintf(cmd, sizeof(cmd), "AT+ENROLL+50+%d+%d\r\n",press, user_id);
-            printf("\n[%d/3] Place finger on sensor...\n", press);
-            sleep(1);
-    
-            tcflush(port, TCIFLUSH);
-            write(port, cmd, strlen(cmd));
-            snprintf(out_buf,out_size,"Sent: %s", cmd);
-    
-            int n = 0;
-            for (int attempt = 0; attempt < PROBE_TIMEOUT_S; attempt++) {
-                sleep(1);
-                n = read(port, buf, sizeof(buf));
-                if (n > 0) break;
-                snprintf(out_buf,out_size,"Waiting... (%d/%d)\n", attempt + 1, PROBE_TIMEOUT_S);
-            }
-    
-            if (n <= 0) {
-                snprintf(out_buf,out_size,"No response on press %d — enroll failed\n", press);
-                return;
-            }
-    
-            snprintf(out_buf,out_size,"RAW (%d bytes):", n);
-            for (int i = 0; i < n; i++)
-                printf(" %02X", buf[i]);
-            snprintf(out_buf,out_size,"\n");
-    
-            unsigned char resp = buf[0];
-            switch (resp) {
-                case 0x00:
-                    snprintf(out_buf,out_size,"[%d/3] Fingerprint captured successfully\n", press);
-                    break;
-                case 0x01:
-                    snprintf(out_buf,out_size,"[%d/3] Communication error (0x01) — retrying\n", press);
-                    press--;
-                    break;
-                case 0x1C:
-                    snprintf(out_buf,out_size,"[%d/3] Timeout — finger not detected (0x1C)\n", press);
-                    printf(out_buf,out_size,"Enroll aborted — restart and try again\n");
-                    return;
-                case 0x06:
-                    snprintf(out_buf,out_size,"[%d/3] Image too messy (0x06) — clean finger and retry\n", press);
-                    press--;
-                    break;
-                default:
-                    snprintf(out_buf,out_size,"[%d/3] Error response: 0x%02X — enroll failed\n", press, resp);
-                    return;
-            }
-    
-            if (press < 3) {
-                snprintf(out_buf,out_size,"Lift finger now...\n");
-                sleep(2);
-            }
-        }
-    
-        snprintf(out_buf,out_size,"\n----------------------------------------------\n");
-        snprintf(out_buf,out_size,"SUCCESS — User ID %d enrolled!\n", user_id);
+    enrollFinger(id);
+    Record[id].isEnrolled = 1;
+    Record[id].isIN       = 0;
+    snprintf(out_buf, out_size,
+             "{\"ok\":true,\"msg\":\"User %d enrolled\"}",  id);
   }
     
 
